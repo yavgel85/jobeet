@@ -43,3 +43,16 @@ services:
     App\EventListener\JobTokenListener:
         tags:
             - { name: doctrine.event_listener, event: prePersist }
+
+    App\BranchLoader\GitLoader:
+        arguments:
+            ['%kernel.project_dir%']
+
+    App\DataCollector\GitDataCollector:
+        tags:
+            -
+                name:     data_collector
+                template: 'data_collector/git_data.html.twig'
+                # must match the value returned by the getName() method
+                id: 'app.git_data_collector'
+        public: false
