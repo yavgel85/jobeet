@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Entity\Category;
 use App\Entity\Job;
+use App\Service\JobHistoryService;
 use Knp\Component\Pager\PaginatorInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\Routing\Annotation\Route;
@@ -25,10 +26,17 @@ class CategoryController extends Controller
      * @param Category $category
      * @param int $page
      * @param PaginatorInterface $paginator
+     * @param JobHistoryService $jobHistoryService
      *
      * @return Response
+     * @throws \Doctrine\ORM\NonUniqueResultException
      */
-    public function show(Category $category, int $page, PaginatorInterface $paginator): Response
+    public function show(
+        Category $category,
+        int $page,
+        PaginatorInterface $paginator,
+        JobHistoryService $jobHistoryService
+    ): Response
     {
         $activeJobs = $paginator->paginate(
             $this->getDoctrine()
@@ -41,6 +49,7 @@ class CategoryController extends Controller
         return $this->render('category/show.html.twig', [
             'category' => $category,
             'activeJobs' => $activeJobs,
+            'historyJobs' => $jobHistoryService->getJobs(),
         ]);
     }
 }
